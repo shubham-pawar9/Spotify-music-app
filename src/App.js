@@ -9,9 +9,9 @@ const App = () => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
-
+  const [likesList, setLikedList] = useState([]);
   const audioPlayerRef = useRef(null);
-
+  const [listSelected, setListSelected] = useState("All");
   const fetchData = () => {
     return new Promise(async (resolve, reject) => {
       try {
@@ -62,7 +62,35 @@ const App = () => {
     }
   };
   const handleHitLike = (likedSong) => {
-    console.log(likedSong);
+    setLikedList((prev) =>
+      prev === undefined ? [likedSong] : [...prev, likedSong]
+    );
+  };
+  const handlePlayNext = () => {
+    songList.map((item) => {
+      if (item.id == playingSong.id + 1) {
+        setPlayingSong(item);
+        if (document.querySelector(".favSong.active"))
+          document.querySelector(".favSong.active").classList.remove("active");
+        if (document.querySelector(`#song${item.id}`))
+          document.querySelector(`#song${item.id}`).classList.add("active");
+      }
+    });
+    setTimeout(() => {
+      handlePlayPause();
+    }, 100);
+  };
+  const handlePlayPrevious = () => {
+    songList.map((item) => {
+      if (item.id == playingSong.id - 1) {
+        setPlayingSong(item);
+        document.querySelector(".favSong.active").classList.remove("active");
+        document.querySelector(`#song${item.id}`).classList.add("active");
+      }
+    });
+    setTimeout(() => {
+      handlePlayPause();
+    }, 100);
   };
   return (
     <>
@@ -80,6 +108,9 @@ const App = () => {
         handleDurationChange={handleDurationChange}
         handleSliderChange={handleSliderChange}
         duration={duration}
+        likesList={likesList}
+        listSelected={listSelected}
+        setListSelected={setListSelected}
       />
       {songCover && (
         <SongCover
@@ -91,6 +122,9 @@ const App = () => {
           duration={duration}
           setSongCover={setSongCover}
           handleHitLike={handleHitLike}
+          handlePlayNext={handlePlayNext}
+          handlePlayPrevious={handlePlayPrevious}
+          likesList={likesList}
         />
       )}
     </>

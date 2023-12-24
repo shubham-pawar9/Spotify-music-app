@@ -14,6 +14,9 @@ const Home = ({
   handleSliderChange,
   currentTime,
   duration,
+  likesList,
+  listSelected,
+  setListSelected,
 }) => {
   const [recentPlayList, setRecentPlayList] = useState([]);
 
@@ -45,7 +48,8 @@ const Home = ({
   const handleSongPlay = (item, e) => {
     if (document.querySelector(".favSong.active"))
       document.querySelector(".favSong.active").classList.remove("active");
-    e.target.closest(".favSong").classList.add("active");
+    document.querySelector(`#song${item.id}`).classList.add("active");
+    // e.target.closest(".favSong").classList.add("active");
     const isSongInRecentList = recentPlayList.some(
       (song) => song.name === item.name
     );
@@ -66,23 +70,56 @@ const Home = ({
       handlePlayPause();
     }, 10);
   };
+  const handleNavSelect = (item, e) => {
+    setListSelected(item);
+    if (document.querySelector(".nav-list.active"))
+      document.querySelector(".nav-list.active").classList.remove("active");
+    e.target.classList.add("active");
+  };
   return (
     <>
       <div className="homeMainDiv">
         <div className="nav-bar">
           <ul>
             <li className="nav-list">SP</li>
-            <li className="nav-list active">All</li>
-            <li className="nav-list">Fav</li>
-            <li className="nav-list">Podcasts</li>
+            <li
+              className="nav-list active"
+              onClick={(e) => handleNavSelect("All", e)}
+            >
+              All
+            </li>
+            <li className="nav-list" onClick={(e) => handleNavSelect("Fav", e)}>
+              Fav
+            </li>
+            <li className="nav-list">Album</li>
           </ul>
         </div>
         <div className="fav-song-list">
           {songList &&
+            listSelected == "All" &&
             songList.map((item, index) => {
               return (
                 <div
                   key={index}
+                  id={`song${item.id}`}
+                  className="favSong"
+                  onClick={(e) => handleSongPlay(item, e)}
+                >
+                  <img
+                    src={process.env.PUBLIC_URL + `/images/${item.cover}`}
+                    alt="song-cover"
+                  />
+                  <span className="song-name">{item.name}</span>
+                </div>
+              );
+            })}
+          {likesList &&
+            listSelected == "Fav" &&
+            likesList.map((item, index) => {
+              return (
+                <div
+                  key={index}
+                  id={`song${item.id}`}
                   className="favSong"
                   onClick={(e) => handleSongPlay(item, e)}
                 >
@@ -99,9 +136,10 @@ const Home = ({
           {recentPlayList.length > 0 && <span>Recently played</span>}
           <div className="recent-song-list">
             {recentPlayList &&
-              recentPlayList.map((item) => {
+              recentPlayList.map((item, index) => {
                 return (
                   <div
+                    key={index}
                     className="recentSong"
                     onClick={() => handleRecentSongPlay(item)}
                   >
