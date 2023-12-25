@@ -12,6 +12,7 @@ const App = () => {
   const [likesList, setLikedList] = useState([]);
   const audioPlayerRef = useRef(null);
   const [listSelected, setListSelected] = useState("All");
+  const [activeSong, setActiveSong] = useState("");
   const fetchData = () => {
     return new Promise(async (resolve, reject) => {
       try {
@@ -92,6 +93,12 @@ const App = () => {
       handlePlayPause();
     }, 100);
   };
+  useEffect(() => {
+    if (document.querySelector(".favSong.active"))
+      document.querySelector(".favSong.active").classList.remove("active");
+    if (document.querySelector(`#song${activeSong}`))
+      document.querySelector(`#song${activeSong}`).classList.add("active");
+  }, [listSelected]);
   return (
     <>
       <Home
@@ -111,6 +118,8 @@ const App = () => {
         likesList={likesList}
         listSelected={listSelected}
         setListSelected={setListSelected}
+        setActiveSong={setActiveSong}
+        activeSong={activeSong}
       />
       {songCover && (
         <SongCover

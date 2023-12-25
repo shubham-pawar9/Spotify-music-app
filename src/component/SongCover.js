@@ -30,7 +30,13 @@ const SongCover = ({
   return (
     <>
       <div className="song-cover-div">
-        <button className="close-cover" onClick={() => setSongCover(false)}>
+        <button
+          className="close-cover"
+          onClick={() => {
+            setSongCover(false);
+            document.getElementById("root").style.overflow = "auto";
+          }}
+        >
           <img
             className="song-cover-img"
             src={process.env.PUBLIC_URL + "/images/close.png"}

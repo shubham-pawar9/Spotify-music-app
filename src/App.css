@@ -7,6 +7,9 @@
   background-color: #000;
   height: 100vh;
 }
+button {
+  cursor: pointer;
+}
 .nav-bar {
   height: 70px;
 }
@@ -29,6 +32,7 @@
   font-size: 15px;
   color: #fff;
   background-color: #353434;
+  cursor: pointer;
 }
 .nav-list.active {
   background-color: #1abd54;
@@ -40,10 +44,11 @@
   justify-content: center;
   height: 60vh;
   overflow-y: auto;
+  overflow-x: hidden;
   flex-wrap: wrap;
   align-content: flex-start;
 }
-.favSong {
+.favSong, .favAlbum {
   height: 70px;
   width: calc(88vw / 2);
   margin: 5px;
@@ -53,8 +58,9 @@
   align-items: center;
   transition: all 0.2s linear;
   border-radius: 4px;
+  cursor: pointer;
 }
-.favSong img {
+.favSong img, .favAlbum img {
   height: 85%;
   margin: 5px;
   border-radius: 4px;
@@ -63,7 +69,11 @@
   background-color: #ff9a0f;
   color: #000;
 }
-.favSong span {
+.favAlbum.active {
+ border: 3px solid #ff9a0f;;
+  color: #ff9a0f;
+}
+.favSong span, .favAlbum span {
   font-size: 13px;
 }
 .recent-played-list {
@@ -84,6 +94,7 @@
   align-items: center;
   justify-content: center;
   border-radius: 4px;
+  cursor: pointer;
 }
 .recent-song-list {
   display: flex;
@@ -114,6 +125,7 @@
     align-items: center;
     justify-content: space-around;
     color: #fff;
+    cursor: pointer;
 }
 .playing-song-div img {
   height: 80%;
@@ -132,6 +144,7 @@
   height: 3px;
   background-color: #fff;
   appearance: none; 
+  cursor: pointer;
 }
 #songSlider::-webkit-slider-thumb {
   -webkit-appearance: none;
@@ -143,7 +156,11 @@
   cursor: pointer;
 }
 .playing-song-name{
-  width: 150px;
+  width: 60vw;
+  height: 100%;
+  display: flex;
+  align-items: center;
+
 }
 .song-cover-div {
   height: 100vh;
@@ -225,12 +242,36 @@
 }
 .hit-like-btn {
   height: 40px;
+  cursor: pointer;
 }
 .song-controls {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  width: 50vw;
-  position: absolute;
-  bottom: 10px;
+    justify-content: space-between;
+    align-items: center;
+    width: 80%;
+    position: absolute;
+    bottom: 10px;
+}
+.fav-song-list::-webkit-scrollbar {
+  display: none;
+}
+.album-names::-webkit-scrollbar {
+  display: none;
+}
+.album-names {
+  display: flex;
+  width: 100%;
+  overflow-x: scroll;
+  flex-direction: row;
+  flex-wrap: nowrap;
+}
+
+.favAlbum {
+  width: 200px;
+  height: 200px;
+  position: relative;
+}
+.album-songs {
+  display: flex;
+  flex-wrap: wrap;
 }

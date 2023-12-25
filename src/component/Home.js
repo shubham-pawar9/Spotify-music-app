@@ -17,8 +17,11 @@ const Home = ({
   likesList,
   listSelected,
   setListSelected,
+  setActiveSong,
+  activeSong,
 }) => {
   const [recentPlayList, setRecentPlayList] = useState([]);
+  const [albumSong, setAlbumSong] = useState("");
 
   useEffect(() => {
     if (playingSong.name !== undefined) {
@@ -46,6 +49,7 @@ const Home = ({
   }, [playingSong]);
 
   const handleSongPlay = (item, e) => {
+    setActiveSong(item.id);
     if (document.querySelector(".favSong.active"))
       document.querySelector(".favSong.active").classList.remove("active");
     document.querySelector(`#song${item.id}`).classList.add("active");
@@ -65,16 +69,32 @@ const Home = ({
     }, 10);
   };
   const handleRecentSongPlay = (item) => {
+    console.log(item);
     setPlayingSong(item);
     setTimeout(() => {
       handlePlayPause();
     }, 10);
+    if (document.querySelector(".favSong.active"))
+      document.querySelector(".favSong.active").classList.remove("active");
+    if (document.querySelector(`#song${item.id}`))
+      document.querySelector(`#song${item.id}`).classList.add("active");
   };
   const handleNavSelect = (item, e) => {
     setListSelected(item);
     if (document.querySelector(".nav-list.active"))
       document.querySelector(".nav-list.active").classList.remove("active");
     e.target.classList.add("active");
+  };
+  const handleSongCover = () => {
+    setSongCover(true);
+    document.getElementById("root").style.overflow = "hidden";
+  };
+  const handleAlbumSongShow = (item, e) => {
+    if (document.querySelector(".favAlbum.active"))
+      document.querySelector(".favAlbum.active").classList.remove("active");
+    document.querySelector(`#album${item.id}`).classList.add("active");
+    setAlbumSong(item.album);
+    console.log(item.album);
   };
   return (
     <>
@@ -91,7 +111,12 @@ const Home = ({
             <li className="nav-list" onClick={(e) => handleNavSelect("Fav", e)}>
               Fav
             </li>
-            <li className="nav-list">Album</li>
+            <li
+              className="nav-list"
+              onClick={(e) => handleNavSelect("Album", e)}
+            >
+              Album
+            </li>
           </ul>
         </div>
         <div className="fav-song-list">
@@ -113,6 +138,62 @@ const Home = ({
                 </div>
               );
             })}
+          <div className="album-names">
+            {songList &&
+              listSelected === "Album" &&
+              (() => {
+                const uniqueAlbums = new Set();
+                return songList.map((item, index) => {
+                  if (
+                    item.album !== undefined &&
+                    !uniqueAlbums.has(item.album)
+                  ) {
+                    uniqueAlbums.add(item.album);
+                    return (
+                      <>
+                        <div
+                          key={index}
+                          id={`album${item.id}`}
+                          className="favAlbum"
+                          onClick={(e) => handleAlbumSongShow(item, e)}
+                        >
+                          <img
+                            src={
+                              process.env.PUBLIC_URL + `/images/${item.cover}`
+                            }
+                            alt="song-cover"
+                          />
+                        </div>
+                      </>
+                    );
+                  } else {
+                    return null; // Skip rendering for duplicate albums
+                  }
+                });
+              })()}
+          </div>
+          <div className="album-songs">
+            {songList &&
+              listSelected == "Album" &&
+              songList.map((item, index) => {
+                if (item.album != undefined && item.album == albumSong) {
+                  return (
+                    <div
+                      key={index}
+                      id={`song${item.id}`}
+                      className="favSong"
+                      onClick={(e) => handleSongPlay(item, e)}
+                    >
+                      <img
+                        src={process.env.PUBLIC_URL + `/images/${item.cover}`}
+                        alt="song-cover"
+                      />
+                      <span className="song-name">{item.name}</span>
+                    </div>
+                  );
+                }
+              })}
+          </div>
           {likesList &&
             listSelected == "Fav" &&
             likesList.map((item, index) => {
@@ -163,22 +244,24 @@ const Home = ({
             {
               <div className="playing-song-div">
                 <img
-                  onClick={() => setSongCover(true)}
+                  onClick={handleSongCover}
                   src={
                     process.env.PUBLIC_URL + `/images/${playingSong["cover"]}`
                   }
                   alt="song-cover"
                 />
-                <span
-                  onClick={() => setSongCover(true)}
-                  className="playing-song-name"
-                >
+                <span onClick={handleSongCover} className="playing-song-name">
                   {playingSong["name"]}
                 </span>
                 <audio
                   ref={audioPlayerRef}
                   id="audioPlayer"
-                  src={process.env.PUBLIC_URL + `/media/${playingSong["path"]}`}
+                  src={
+                    playingSong["album"] != undefined
+                      ? process.env.PUBLIC_URL +
+                        `/media/${playingSong["album"]}/${playingSong["path"]}`
+                      : process.env.PUBLIC_URL + `/media/${playingSong["path"]}`
+                  }
                 ></audio>
                 <button
                   id="playPauseButton"

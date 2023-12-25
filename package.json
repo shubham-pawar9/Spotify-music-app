@@ -1,6 +1,7 @@
 {
   "name": "spotify-music-app",
   "version": "0.1.0",
+  "homepage": "https://shubham-pawar9.github.io/Spotify-music-app",
   "private": true,
   "dependencies": {
     "@react-three/drei": "^9.92.1",
@@ -21,10 +22,10 @@
     "web-vitals": "^2.1.4"
   },
   "scripts": {
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d build",
     "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "build": "react-scripts build"
   },
   "eslintConfig": {
     "extends": [
@@ -45,6 +46,7 @@
     ]
   },
   "devDependencies": {
-    "@types/three": "^0.159.0"
+    "@types/three": "^0.159.0",
+    "gh-pages": "^6.1.1"
   }
 }
